@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import animals from "./api/animals";
 
@@ -16,7 +16,9 @@ interface Try {
 }
 
 function App() {
+  const animationTimer = useRef<NodeJS.Timeout>();
   const [currentTry, setCurrentTry] = useState(0);
+  const [incorrect, setIncorrect] = useState(false);
   const [victory, setVictory] = useState<boolean>();
   const [tries, setTries] = useState<Try[]>([]);
   const [inputValue, setInputValue] = useState<string[]>([]);
@@ -31,6 +33,17 @@ function App() {
     setInputValue(value);
   }, []);
 
+  const shake = useCallback(() => {
+    setIncorrect(true);
+
+    if (animationTimer.current) {
+      clearTimeout(animationTimer.current);
+    }
+    animationTimer.current = setTimeout(() => {
+      setIncorrect(false);
+    }, 750);
+  }, []);
+
   const handleSubmit = useCallback<SubmitEventHandler>(
     (input) => {
       if (victory) return;
@@ -38,7 +51,7 @@ function App() {
         setVictory(true);
       }
 
-      if (animals.elementos.includes(input.join("")) || true) {
+      if (animals.elementos.includes(input.join(""))) {
         setTries((prev) => {
           const next = [...prev];
 
@@ -78,9 +91,11 @@ function App() {
         });
         setCurrentTry((prev) => prev + 1);
         setInputValue([]);
+      } else {
+        shake();
       }
     },
-    [currentTry, solution, victory]
+    [currentTry, shake, solution, victory]
   );
 
   // Fetch word from api.
@@ -104,6 +119,7 @@ function App() {
         <Word key={index} letters={row.letters} />
       ))}
       <Input
+        incorrect={incorrect}
         letters={inputValue}
         length={solution.length}
         onChange={handleInputChange}

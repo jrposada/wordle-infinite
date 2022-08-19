@@ -37,13 +37,17 @@ type ChangeEventHandler = (value: string[]) => void;
 type SubmitEventHandler = (value: string[]) => void;
 
 interface InputProps {
+  incorrect: boolean;
   length: number;
   letters: string[];
   onChange: ChangeEventHandler;
   onSubmit: SubmitEventHandler;
 }
 
-function Input({ onChange, length, onSubmit, letters }: InputProps) {
+function Input({ incorrect, onChange, length, onSubmit, letters }: InputProps) {
+  let cssClasses = "input";
+  if (incorrect) cssClasses += ` input--incorrect`;
+
   const values = useMemo<string[]>(() => {
     const result = [];
     for (let i = 0; i < length; i++) {
@@ -70,7 +74,7 @@ function Input({ onChange, length, onSubmit, letters }: InputProps) {
   }, [length, letters, onChange, onSubmit]);
 
   return (
-    <div className="input">
+    <div className={cssClasses}>
       {values.map((letter, index) => (
         <InputLetter key={index} value={letter} />
       ))}
