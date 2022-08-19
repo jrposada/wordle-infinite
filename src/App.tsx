@@ -51,7 +51,7 @@ function App() {
         setVictory(true);
       }
 
-      if (animals.elementos.includes(input.join(""))) {
+      if (animals.elementos.includes(input.join("")) || true) {
         setTries((prev) => {
           const next = [...prev];
 
@@ -87,6 +87,16 @@ function App() {
               (evaluatedLettersCount[letter] ?? 0) + 1;
           });
 
+          // Third pass only check misplaced as they may be incorrect as there are extra after check.
+          input.forEach((letter, index) => {
+            if (
+              next[currentTry].letters[index].state === "misplaced" &&
+              (evaluatedLettersCount[letter] ?? 0) > solutionCounts[letter]
+            ) {
+              next[currentTry].letters[index].state = "incorrect";
+            }
+          });
+
           return next;
         });
         setCurrentTry((prev) => prev + 1);
@@ -98,7 +108,7 @@ function App() {
     [currentTry, shake, solution, victory]
   );
 
-  // Fetch word from api.
+  // Update tries.
   useEffect(() => {
     setTries(() => {
       const result = [];
