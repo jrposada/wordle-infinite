@@ -1,0 +1,21 @@
+.letter {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid gray;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  font-size: larger;
+
+  &--correct {
+    background-color: green;
+  }
+  &--misplaced {
+    background-color: yellow;
+  }
+}
