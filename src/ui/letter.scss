@@ -1,3 +1,8 @@
+@mixin variant($color) {
+  background-color: $color;
+  transform: rotateY(360deg);
+}
+
 .letter {
   width: 2rem;
   height: 2rem;
@@ -12,13 +17,16 @@
   font-weight: bold;
   font-size: larger;
 
+  transition: transform 500ms;
+  transform-style: preserve-3d;
+
   &--correct {
-    background-color: green;
+    @include variant(green);
   }
   &--misplaced {
-    background-color: yellow;
+    @include variant(yellow);
   }
   &--incorrect {
-    background-color: lightgray;
+    @include variant(lightgray);
   }
 }
