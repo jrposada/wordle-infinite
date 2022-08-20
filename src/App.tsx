@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import animals from "./api/animals";
+import wordList from "./api/list-formatted.json";
 
 import { getRandomInt } from "./utils/random";
 import { LetterProps } from "./ui/letter";
@@ -24,7 +24,7 @@ function App() {
   const [inputValue, setInputValue] = useState<string[]>([]);
 
   const solution = useMemo(
-    () => animals.elementos[getRandomInt(animals.elementos.length)],
+    () => wordList.l[getRandomInt(wordList.l.length)],
     []
   );
   const numTries = solution.length + 1;
@@ -51,7 +51,7 @@ function App() {
         setVictory(true);
       }
 
-      if (animals.elementos.includes(input.join("")) || true) {
+      if (wordList.l.includes(input.join("")) || true) {
         setTries((prev) => {
           const next = [...prev];
 
