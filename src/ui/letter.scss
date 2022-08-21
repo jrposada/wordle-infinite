@@ -1,11 +1,14 @@
+$size: 6rem;
+$font-size: 4rem;
+
 @mixin variant($color) {
   background-color: $color;
   transform: rotateY(360deg);
 }
 
 .letter {
-  width: 2rem;
-  height: 2rem;
+  width: $size;
+  height: $size;
   border: 1px solid gray;
   border-radius: 0.4rem;
   padding: 0.5rem;
@@ -15,7 +18,7 @@
   justify-content: center;
 
   font-weight: bold;
-  font-size: larger;
+  font-size: $font-size;
 
   transition: transform 500ms;
   transform-style: preserve-3d;

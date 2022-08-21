@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import wordList from "./api/list-formatted.json";
+import _wordList from "./api/list-manual.json";
 
 import { getRandomInt } from "./utils/random";
 import { LetterProps } from "./ui/letter";
@@ -10,6 +10,9 @@ import Word from "./ui/word";
 import Defeat from "./ui/defeat";
 
 import "./app.scss";
+
+const wordList = _wordList.filter((word) => word.match(/^[A-z]+$/));
+console.log(`Playing with ${wordList.length}`);
 
 interface Try {
   letters: LetterProps[];
@@ -23,10 +26,7 @@ function App() {
   const [tries, setTries] = useState<Try[]>([]);
   const [inputValue, setInputValue] = useState<string[]>([]);
 
-  const solution = useMemo(
-    () => wordList.l[getRandomInt(wordList.l.length)],
-    []
-  );
+  const solution = useMemo(() => wordList[getRandomInt(wordList.length)], []);
   const numTries = solution.length + 1;
 
   const handleInputChange = useCallback<ChangeEventHandler>((value) => {
@@ -51,7 +51,7 @@ function App() {
         setVictory(true);
       }
 
-      if (wordList.l.includes(input.join("")) || true) {
+      if (wordList.includes(input.join(""))) {
         setTries((prev) => {
           const next = [...prev];
 
@@ -94,6 +94,7 @@ function App() {
               (evaluatedLettersCount[letter] ?? 0) > solutionCounts[letter]
             ) {
               next[currentTry].letters[index].state = "incorrect";
+              evaluatedLettersCount[letter] -= 1;
             }
           });
 
