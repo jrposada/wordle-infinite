@@ -37,7 +37,7 @@ function Input({ incorrect, onChange, length, onSubmit, letters }: InputProps) {
   }, [length, letters]);
 
   const handleChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
-    (event) => onChange(event.target.value.split("")),
+    (event) => onChange(event.target.value.toLocaleLowerCase().split("")),
     [onChange]
   );
 

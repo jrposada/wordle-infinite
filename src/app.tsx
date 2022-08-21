@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import _wordList from "./api/list-manual.json";
+import _wordList from "./core/api/list-manual.json";
 
 import { getRandomInt } from "./utils/random";
 import { LetterProps } from "./ui/letter";
@@ -10,8 +10,11 @@ import Word from "./ui/word";
 import Defeat from "./ui/defeat";
 
 import "./app.scss";
+import { wordFormatter } from "./core/formatters/word-formatter";
 
-const wordList = _wordList.filter((word) => word.match(/^[A-z]+$/));
+const wordList = _wordList
+  .map((word) => wordFormatter(word))
+  .filter((word) => word.match(/^[A-z]+$/));
 console.log(`Playing with ${wordList.length}`);
 
 interface Try {
@@ -26,7 +29,8 @@ function App() {
   const [tries, setTries] = useState<Try[]>([]);
   const [inputValue, setInputValue] = useState<string[]>([]);
 
-  const solution = useMemo(() => wordList[getRandomInt(wordList.length)], []);
+  // const solution = useMemo(() => wordList[getRandomInt(wordList.length)], []);
+  const solution = "esten";
   const numTries = solution.length + 1;
 
   const handleInputChange = useCallback<ChangeEventHandler>((value) => {
@@ -137,7 +141,7 @@ function App() {
         onSubmit={handleSubmit}
       />
       {victory && <Victory />}
-      {currentTry === numTries && <Defeat solution={solution} />}
+      {currentTry === numTries && !victory && <Defeat solution={solution} />}
     </div>
   );
 }
