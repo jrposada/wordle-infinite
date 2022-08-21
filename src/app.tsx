@@ -29,8 +29,7 @@ function App() {
   const [tries, setTries] = useState<Try[]>([]);
   const [inputValue, setInputValue] = useState<string[]>([]);
 
-  // const solution = useMemo(() => wordList[getRandomInt(wordList.length)], []);
-  const solution = "esten";
+  const solution = useMemo(() => wordList[getRandomInt(wordList.length)], []);
   const numTries = solution.length + 1;
 
   const handleInputChange = useCallback<ChangeEventHandler>((value) => {
