@@ -1,37 +1,14 @@
-import { useEffect, useMemo } from "react";
+import {
+  createRef,
+  FormEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 
 import InputLetter from "./input-letter";
 
 import "./input.scss";
-
-const VALID_KEYS = [
-  "q",
-  "w",
-  "e",
-  "r",
-  "t",
-  "y",
-  "u",
-  "i",
-  "o",
-  "p",
-  "a",
-  "s",
-  "d",
-  "f",
-  "g",
-  "h",
-  "j",
-  "k",
-  "l",
-  "z",
-  "x",
-  "c",
-  "v",
-  "b",
-  "n",
-  "m",
-];
 
 type ChangeEventHandler = (value: string[]) => void;
 type SubmitEventHandler = (value: string[]) => void;
@@ -45,6 +22,8 @@ interface InputProps {
 }
 
 function Input({ incorrect, onChange, length, onSubmit, letters }: InputProps) {
+  const inputRef = createRef<HTMLInputElement>();
+
   let cssClasses = "input";
   if (incorrect) cssClasses += ` input--incorrect`;
 
@@ -57,24 +36,35 @@ function Input({ incorrect, onChange, length, onSubmit, letters }: InputProps) {
     return result;
   }, [length, letters]);
 
-  // Hook to keydown event.
-  useEffect(() => {
-    const handle = (event: KeyboardEvent) => {
-      if (event.key === "Enter" && letters.length === length) {
-        onSubmit(letters);
-      } else if (event.key === "Backspace") {
-        onChange(letters.slice(0, -1));
-      } else if (VALID_KEYS.includes(event.key) && letters.length < length) {
-        onChange([...letters, event.key]);
-      }
-    };
-    document.addEventListener("keydown", handle);
+  const handleChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
+    (event) => onChange(event.target.value.split("")),
+    [onChange]
+  );
 
-    return () => document.removeEventListener("keydown", handle);
-  }, [length, letters, onChange, onSubmit]);
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    (event) => {
+      event.preventDefault();
+      letters.length === length && onSubmit(letters);
+    },
+    [length, onSubmit, letters]
+  );
+
+  const handleBlur = useCallback(() => inputRef.current?.focus(), [inputRef]);
+
+  // Focus
+  useEffect(() => inputRef.current?.focus(), [inputRef]);
 
   return (
     <div className={cssClasses}>
+      <form onSubmit={handleSubmit}>
+        <input
+          ref={inputRef}
+          value={letters.join("")}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          className="input__input"
+        />
+      </form>
       {values.map((letter, index) => (
         <InputLetter key={index} value={letter} />
       ))}
