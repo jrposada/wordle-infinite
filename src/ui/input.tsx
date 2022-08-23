@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { clear } from 'console';
 import {
     ChangeEventHandler,
     createRef,
@@ -7,7 +6,6 @@ import {
     useCallback,
     useEffect,
     useMemo,
-    useRef,
     useState
 } from 'react';
 
