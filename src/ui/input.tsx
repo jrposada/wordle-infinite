@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { clear } from 'console';
 import {
     ChangeEventHandler,
     createRef,
@@ -6,6 +7,7 @@ import {
     useCallback,
     useEffect,
     useMemo,
+    useRef,
     useState
 } from 'react';
 
@@ -23,6 +25,7 @@ interface InputProps {
 
 function Input({ incorrect, length, onSubmit }: InputProps) {
     const inputRef = createRef<HTMLInputElement>();
+    const [clear, setClear] = useState(false);
     const [value, setValue] = useState('');
 
     const letters = useMemo<string[]>(() => {
@@ -50,10 +53,17 @@ function Input({ incorrect, length, onSubmit }: InputProps) {
             if (value.length !== length) return;
 
             onSubmit(value.split(''));
-            setValue('');
+            setClear(true);
         },
         [length, onSubmit, value]
     );
+
+    useEffect(() => {
+        if (clear && !incorrect) {
+            setValue('');
+            setClear(false);
+        }
+    }, [clear, incorrect]);
 
     // Focus trap
     const handleBlur = useCallback(() => inputRef.current?.focus(), [inputRef]);
