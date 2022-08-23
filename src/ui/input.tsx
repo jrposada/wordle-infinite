@@ -1,76 +1,81 @@
+import classNames from 'classnames';
 import {
-  createRef,
-  FormEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+    ChangeEventHandler,
+    createRef,
+    FormEventHandler,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState
+} from 'react';
 
-import InputLetter from "./input-letter";
+import InputLetter from './input-letter';
 
-import "./input.scss";
+import './input.scss';
 
-type ChangeEventHandler = (value: string[]) => void;
 type SubmitEventHandler = (value: string[]) => void;
 
 interface InputProps {
-  incorrect: boolean;
-  length: number;
-  letters: string[];
-  onChange: ChangeEventHandler;
-  onSubmit: SubmitEventHandler;
+    incorrect: boolean;
+    length: number;
+    onSubmit: SubmitEventHandler;
 }
 
-function Input({ incorrect, onChange, length, onSubmit, letters }: InputProps) {
-  const inputRef = createRef<HTMLInputElement>();
+function Input({ incorrect, length, onSubmit }: InputProps) {
+    const inputRef = createRef<HTMLInputElement>();
+    const [value, setValue] = useState('');
 
-  let cssClasses = "input";
-  if (incorrect) cssClasses += ` input--incorrect`;
+    const letters = useMemo<string[]>(() => {
+        const result: string[] = [];
+        for (let i = 0; i < length; i++) {
+            result.push(value[i] ?? '');
+        }
+        return result;
+    }, [length, value]);
 
-  const values = useMemo<string[]>(() => {
-    const result = [];
-    for (let i = 0; i < length; i++) {
-      if (i < letters.length) result.push(letters[i]);
-      else result.push("");
-    }
-    return result;
-  }, [length, letters]);
+    const cssClasses = classNames('input', { 'input--incorrect': incorrect });
 
-  const handleChange = useCallback<React.ChangeEventHandler<HTMLInputElement>>(
-    (event) => onChange(event.target.value.toLocaleLowerCase().split("")),
-    [onChange]
-  );
+    const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+        (event) => {
+            if (event.target.value.length <= length) {
+                setValue(event.target.value);
+            }
+        },
+        [length]
+    );
 
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
-    (event) => {
-      event.preventDefault();
-      letters.length === length && onSubmit(letters);
-    },
-    [length, onSubmit, letters]
-  );
+    const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+        (event) => {
+            event.preventDefault();
+            if (value.length !== length) return;
 
-  const handleBlur = useCallback(() => inputRef.current?.focus(), [inputRef]);
+            onSubmit(value.split(''));
+            setValue('');
+        },
+        [length, onSubmit, value]
+    );
 
-  // Focus
-  useEffect(() => inputRef.current?.focus(), [inputRef]);
+    // Focus trap
+    const handleBlur = useCallback(() => inputRef.current?.focus(), [inputRef]);
+    useEffect(() => inputRef.current?.focus(), [inputRef]);
 
-  return (
-    <div className={cssClasses}>
-      <form onSubmit={handleSubmit}>
-        <input
-          ref={inputRef}
-          value={letters.join("")}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className="input__input"
-        />
-      </form>
-      {values.map((letter, index) => (
-        <InputLetter key={index} value={letter} />
-      ))}
-    </div>
-  );
+    return (
+        <div className={cssClasses}>
+            <form onSubmit={handleSubmit}>
+                <input
+                    ref={inputRef}
+                    className="input__input"
+                    value={value}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                />
+            </form>
+            {letters.map((letter, index) => (
+                <InputLetter key={index} value={letter} />
+            ))}
+        </div>
+    );
 }
 
 export default Input;
-export type { ChangeEventHandler, SubmitEventHandler };
+export type { SubmitEventHandler };

@@ -1,0 +1,8 @@
+@import '../styles/index.scss';
+
+.game-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $gap-xxs;
+}

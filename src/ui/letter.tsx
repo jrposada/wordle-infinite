@@ -1,22 +1,22 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import "./letter.scss";
+import './letter.scss';
 
-type LetterState = "correct" | "misplaced" | "incorrect";
+type LetterState = 'correct' | 'misplaced' | 'incorrect';
 
 interface LetterProps {
-  state?: LetterState;
-  value?: string;
+    value?: string;
+    state?: LetterState;
 }
 
 function Letter({ value, state }: LetterProps) {
-  const cssClasses = useMemo(() => {
-    let result = "letter";
-    if (state) result += ` letter--${state}`;
-    return result;
-  }, [state]);
+    const cssClasses = useMemo(() => {
+        let result = 'letter';
+        if (state) result += ` letter--${state}`;
+        return result;
+    }, [state]);
 
-  return <div className={cssClasses}>{value?.toUpperCase()}</div>;
+    return <div className={cssClasses}>{value?.toUpperCase()}</div>;
 }
 
 export default Letter;

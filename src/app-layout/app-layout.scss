@@ -1,0 +1,29 @@
+@import '../styles/index.scss';
+
+$padding: 1rem;
+
+.app-layout {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        'app-header'
+        'app-body'
+        'app-footer';
+
+    background-color: $background-primary;
+    color: $font-primary;
+
+    &__header {
+        grid-area: app-header;
+        padding: $padding;
+    }
+    &__body {
+        grid-area: app-body;
+        padding: $padding;
+    }
+    &__footer {
+        grid-area: app-footer;
+        padding: $padding;
+    }
+}

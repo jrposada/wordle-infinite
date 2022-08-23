@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import "./defeat.scss";
 
@@ -7,9 +7,11 @@ interface DefeatProps {
 }
 
 function Defeat({ solution }: DefeatProps) {
-  const handleClick = useCallback(() => {
-    document.location.reload();
-  }, []);
+  const restart = useCallback(() => document.location.reload(), []);
+
+  const handleClick = useCallback(() => restart(), [restart]);
+
+  useEffect(() => {});
 
   return (
     <div className="defeat">

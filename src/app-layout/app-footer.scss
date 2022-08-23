@@ -1,0 +1,16 @@
+@import '../styles/index.scss';
+
+.app-footer {
+    display: flex;
+
+    background-color: $background-tertiary;
+    color: $font-tertiary;
+
+    &__version {
+        margin-left: auto;
+    }
+
+    a:visited {
+        color: rgb(205, 250, 255);
+    }
+}

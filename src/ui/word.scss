@@ -1,4 +1,6 @@
+@import '../styles/index.scss';
+
 .word {
-  display: flex;
-  gap: 0.5rem;
+    display: flex;
+    gap: $gap-xxs;
 }
