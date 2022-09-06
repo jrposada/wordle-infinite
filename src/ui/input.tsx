@@ -17,11 +17,12 @@ type SubmitEventHandler = (value: string[]) => void;
 
 interface InputProps {
     incorrect: boolean;
+    disabled: boolean;
     length: number;
     onSubmit: SubmitEventHandler;
 }
 
-function Input({ incorrect, length, onSubmit }: InputProps) {
+function Input({ incorrect, disabled, length, onSubmit }: InputProps) {
     const inputRef = createRef<HTMLInputElement>();
     const [clear, setClear] = useState(false);
     const [value, setValue] = useState('');
@@ -74,6 +75,7 @@ function Input({ incorrect, length, onSubmit }: InputProps) {
                     ref={inputRef}
                     className="input__input"
                     value={value}
+                    disabled={disabled}
                     onChange={handleChange}
                     onBlur={handleBlur}
                 />

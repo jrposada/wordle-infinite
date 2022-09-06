@@ -6,9 +6,10 @@ type GameState = 'victory' | 'defeat' | 'in-progress';
 
 interface ResultProps {
     state: GameState;
+    solution: string;
 }
 
-function Result({ state }: ResultProps) {
+function Result({ state, solution }: ResultProps) {
     const handleClick = useCallback(() => {
         document.location.reload();
     }, []);
@@ -17,7 +18,14 @@ function Result({ state }: ResultProps) {
         (state !== 'in-progress' && (
             <div className="result">
                 <div className="result__message">
-                    {state === 'victory' ? 'Victory!' : 'Defeat'}
+                    {state === 'victory' ? (
+                        'Victory!'
+                    ) : (
+                        <>
+                            <div>Defeat</div>
+                            <div>The solution was {solution}</div>
+                        </>
+                    )}
                     <button onClick={handleClick}>Start again</button>
                 </div>
             </div>

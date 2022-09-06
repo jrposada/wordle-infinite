@@ -110,23 +110,29 @@ function Game() {
 
                     return next;
                 });
-                setCurrentTry((prev) => prev + 1);
+                if (currentTry === numTries - 1) {
+                    setState('defeat');
+                } else {
+                    setCurrentTry((prev) => prev + 1);
+                }
             } else {
                 shake();
             }
         },
-        [currentTry, shake, solution, state]
+        [currentTry, numTries, shake, solution, state]
     );
 
     return (
         <>
+            {solution} {state}
             <GameGrid words={words} />
             <Input
+                disabled={state !== 'in-progress'}
                 incorrect={incorrect}
                 length={solution.length}
                 onSubmit={handleSubmit}
             />
-            <Result state={state} />
+            <Result state={state} solution={solution} />
         </>
     );
 }
