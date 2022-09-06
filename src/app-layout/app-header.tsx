@@ -8,7 +8,7 @@ function AppHeader({ className, ...restProps }: CommonProps) {
 
     return (
         <div className={cssClasses} {...restProps}>
-            <div>WORDLY Infinite</div>
+            <div>WORDLE Infinite</div>
         </div>
     );
 }

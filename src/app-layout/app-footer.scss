@@ -10,7 +10,11 @@
         margin-left: auto;
     }
 
-    a:visited {
+    a {
         color: rgb(205, 250, 255);
+
+        &:visited {
+            color: rgb(205, 250, 255);
+        }
     }
 }
