@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { take, timer } from 'rxjs';
 
@@ -8,9 +9,13 @@ import './word.scss';
 interface WordProps {
     letters: LetterProps[];
     length: number;
+    incorrect: boolean;
 }
 
-function Word({ letters: lettersData, length }: WordProps) {
+function Word({ incorrect, letters: lettersData, length }: WordProps) {
+    // TODO: add incorrect css
+    const cssClasses = classNames('word', { 'word--incorrect': incorrect });
+
     const [letters, setLetters] = useState<LetterProps[]>(() => {
         const result: LetterProps[] = [];
         for (let i = 0; i < length; i++) {
@@ -21,6 +26,8 @@ function Word({ letters: lettersData, length }: WordProps) {
 
     useEffect(() => {
         if (lettersData.length !== length) return;
+
+        setLetters(lettersData.map((letter) => ({ value: letter.value })));
 
         const subscription = timer(0, 75)
             .pipe(take(length))
@@ -39,7 +46,7 @@ function Word({ letters: lettersData, length }: WordProps) {
     }, [length, lettersData]);
 
     return (
-        <div className="word">
+        <div className={cssClasses}>
             {letters.map((letterProps, index) => (
                 <Letter key={index} {...letterProps} />
             ))}

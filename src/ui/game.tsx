@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+    ChangeEventHandler,
+    useCallback,
+    useMemo,
+    useRef,
+    useState
+} from 'react';
 
 import { wordFormatter } from '../core/formatters/word-formatter';
 import { getRandomInt } from '../utils/random';
@@ -11,7 +17,7 @@ import Result, { GameState } from './result';
 
 function Game() {
     const shakeTimeout = useRef<NodeJS.Timeout>();
-    const [incorrect, setIncorrect] = useState(false);
+    const [inputValue, setInputValue] = useState('');
     const [state, setState] = useState<GameState>('in-progress');
     const [currentTry, setCurrentTry] = useState(0);
 
@@ -28,21 +34,38 @@ function Game() {
     const [words, setWords] = useState<WordProps[]>(() => {
         const result: WordProps[] = [];
         for (let i = 0; i < numTries; i++) {
-            result.push({ letters: [], length: solution.length });
+            result.push({
+                letters: [],
+                length: solution.length,
+                incorrect: false
+            });
         }
         return result;
     });
 
     const shake = useCallback(() => {
-        setIncorrect(true);
+        setWords((prev) => {
+            const next = [...prev];
+
+            next[currentTry].incorrect = true;
+
+            return next;
+        });
 
         if (shakeTimeout.current) {
             clearTimeout(shakeTimeout.current);
         }
+
         shakeTimeout.current = setTimeout(() => {
-            setIncorrect(false);
+            setWords((prev) => {
+                const next = [...prev];
+
+                next[currentTry].incorrect = false;
+
+                return next;
+            });
         }, 750);
-    }, []);
+    }, [currentTry]);
 
     const handleSubmit = useCallback<SubmitEventHandler>(
         (value) => {
@@ -55,6 +78,8 @@ function Game() {
             }
 
             if (DICTIONARY.includes(word)) {
+                setInputValue('');
+
                 setWords((prev) => {
                     const next = [...prev];
 
@@ -122,15 +147,40 @@ function Game() {
         [currentTry, numTries, shake, solution, state]
     );
 
+    const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+        (event) => {
+            if (event.target.value.length <= solution.length) {
+                setInputValue(event.target.value);
+
+                setWords((prev) => {
+                    const next = [...prev];
+
+                    // Copy array to change reference. Needed for other nested components to hook into letters change.
+                    next[currentTry].letters = [...next[currentTry].letters];
+
+                    for (let i = 0; i < solution.length; i++) {
+                        next[currentTry].letters[i] = {
+                            value: event.target.value[i]
+                        };
+                    }
+
+                    return next;
+                });
+            }
+        },
+        [currentTry, solution.length]
+    );
+
     return (
         <>
-            {solution} {state}
+            {solution}
             <GameGrid words={words} />
             <Input
                 disabled={state !== 'in-progress'}
-                incorrect={incorrect}
                 length={solution.length}
                 onSubmit={handleSubmit}
+                onChange={handleChange}
+                value={inputValue}
             />
             <Result state={state} solution={solution} />
         </>

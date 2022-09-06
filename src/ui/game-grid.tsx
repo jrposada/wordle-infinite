@@ -9,8 +9,8 @@ interface GameGridProps {
 function GameGrid({ words }: GameGridProps) {
     return (
         <div className="game-grid">
-            {words.map((wordProps) => (
-                <Word {...wordProps} />
+            {words.map((wordProps, index) => (
+                <Word key={index} {...wordProps} />
             ))}
         </div>
     );
